@@ -1,5 +1,6 @@
 package com.smlg;
 
+
 /**
  * ...
  * @author smlg
@@ -14,5 +15,7 @@ class SmH
 	public static var width:Float;
 	
 	public static function switchState(state:SmState):Void {
+		//Remove last state
+		//Add new state
 	}
 }

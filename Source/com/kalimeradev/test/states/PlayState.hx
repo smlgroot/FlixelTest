@@ -9,7 +9,7 @@ import com.smlg.SmH;
 import com.smlg.SmAssets;
 import com.smlg.SmText;
 import com.smlg.SmButton;
-import com.smlg.SmSprite;
+import nme.display.Sprite;
 import nme.display.Bitmap;
 import nme.Assets;
 import feffects.Tween;

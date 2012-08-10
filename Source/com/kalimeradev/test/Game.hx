@@ -18,9 +18,8 @@ class Game  extends SmGame
 		var ratioX:Float = stageWidth / 320;
 		var ratioY:Float = stageHeight / 240;
 		var ratio:Float = Math.min(ratioX, ratioY);
-
 		super(Math.floor(stageWidth / ratio), Math.floor(stageHeight / ratio), MenuState, ratio, 60);
-		
+
 		forceDebugger = true;
 	}
 	

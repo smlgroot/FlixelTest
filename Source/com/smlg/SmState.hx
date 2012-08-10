@@ -1,21 +1,25 @@
 package com.smlg;
 import nme.display.Graphics;
+import nme.display.Sprite;
 
 /**
  * ...
  * @author smlg
  */
 
-class SmState 
+class SmState extends Sprite
 {
-	private var stateElements:Array<SmSprite>;
+	private var stateElements:Array<Sprite>;
 	public function new() 
 	{
-		stateElements = new Array<SmSprite>();
+		super();
+		stateElements = new Array<Sprite>();
+
 	}
 	
-	public function add(sprite:SmSprite):Void {
-		stateElements.push(sprite);
+	public function add(sprite:Sprite):Void {
+		addChild(sprite);
+		//stateElements.push(sprite);
 	}
 
 	public function create():Void {
@@ -23,10 +27,10 @@ class SmState
 	
 	public function update():Void {
 	}
-	public function draw(graphics:Graphics) {
+	/*public function draw(graphics:Graphics) {
 
 		for (i in 0...stateElements.length) {
-			stateElements[i].draw(graphics);
+			//stateElements[i].draw(graphics);
 		}
-	}
+	}*/
 }

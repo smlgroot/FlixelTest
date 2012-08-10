@@ -8,8 +8,8 @@ import nme.display.StageScaleMode;
 import com.smlg.SmGame;
 import com.smlg.SmH;
 import nme.display.FPS;
-
-
+import nme.text.TextField;
+import nme.text.TextFieldAutoSize;
 /**
  * ...
  * @author smlg
@@ -26,7 +26,7 @@ class Main extends Sprite
 		#else
 		addEventListener(Event.ADDED_TO_STAGE, init);
 		#end
-		
+
 	}
 
 	private function init(e) 

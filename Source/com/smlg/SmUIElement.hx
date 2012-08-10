@@ -4,12 +4,13 @@ import nme.Assets;
 import nme.text.TextField;
 import nme.text.TextFieldAutoSize;
 import nme.text.TextFormat;
+import nme.display.Sprite;
 /**
  * ...
  * @author smlg
  */
 
-class SmUIElement extends SmSprite
+class SmUIElement extends Sprite
 {
 	public var text:String;
 	public var antialiasing:Bool;
@@ -37,24 +38,11 @@ class SmUIElement extends SmSprite
 		label.x = x;
 		label.y = y;
 		label.text =text;
-		nme.Lib.stage.addChild(label);
+		//nme.Lib.stage.addChild(label);
+		this.addChild(label);
 		//
 		this.width = label.width;
 		this.height = label.height;
 	}
-	//Getters/Setters
-	override public function setX(x:Float):Float{
-		if (label!=null) {
-			label.x = x;
-		}
-		this.x = x;
-		return this.x;
-	}
-	override public function setY(y:Float):Float{
-		if (label!=null) {
-			label.y = y;
-		}
-		this.y = y;
-		return this.y;
-	}
+
 }
