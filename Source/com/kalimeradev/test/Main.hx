@@ -1,15 +1,16 @@
 package com.kalimeradev.test;
 
+import com.kalimeradev.test.states.MenuState;
+import com.smlg.SmGame;
+import com.smlg.SmState;
+import com.smlg.SmButton;
 import nme.display.Sprite;
 import nme.events.Event;
 import nme.Lib;
 import nme.display.StageAlign;
 import nme.display.StageScaleMode;
-import com.smlg.SmGame;
 import com.smlg.SmH;
 import nme.display.FPS;
-import nme.text.TextField;
-import nme.text.TextFieldAutoSize;
 /**
  * ...
  * @author smlg
@@ -17,7 +18,6 @@ import nme.text.TextFieldAutoSize;
 
 class Main extends Sprite 
 {
-	
 	public function new() 
 	{
 		super();
@@ -35,11 +35,17 @@ class Main extends Sprite
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 		}
-		initialize();
-		////
-		var game:SmGame = new Game();
+		initialize();		
+		////Screen
+		var stageWidth:Int = Lib.current.stage.stageWidth;
+		var stageHeight:Int = Lib.current.stage.stageHeight;
+		var ratioX:Float = stageWidth / 320;
+		var ratioY:Float = stageHeight / 240;
+		var ratio:Float = Math.min(ratioX, ratioY);
+		////Game
+		var game:SmGame= new SmGame(stageWidth,stageHeight,MenuState);
 		addChild(game);
-		////
+		////FPS
 		var fps:FPS = new FPS();
 		addChild(fps);
 		fps.x = 20;
@@ -57,7 +63,7 @@ class Main extends Sprite
 		cross.graphics.lineTo(SmH.width, SmH.height/2);
 		cross.graphics.moveTo(SmH.width/2,0);
 		cross.graphics.lineTo(SmH.width/2, SmH.height);
-		addChild(cross);
+		game.addChild(cross);
 		//
 	}
 	
@@ -71,4 +77,5 @@ class Main extends Sprite
 		Lib.current.stage.align = StageAlign.TOP_LEFT;
 		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
 	}
+
 }

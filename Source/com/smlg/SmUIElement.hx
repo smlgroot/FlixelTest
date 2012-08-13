@@ -12,37 +12,26 @@ import nme.display.Sprite;
 
 class SmUIElement extends Sprite
 {
+	//Label
 	public var text:String;
-	public var antialiasing:Bool;
-	
-	public var label:TextField ;
-	public var font:Font;
-	public var format:TextFormat;
-	public var fontColor:Int;
-	public var fontSize:Int;
-	
-	public function new(x:Float=0,y:Float=0,  text:String="") 
+	public var label:TextField;
+	//Format
+	var font:Font;
+	var format:TextFormat;
+	public function new(text:String="") 
 	{
 		super();
-		this.text=text;
-		this.x=x;
-		this.y=y;
-		font = Assets.getFont ("assets/data/04B_03__.TTF");
-		format = new TextFormat (font.fontName, 20, 0xf0f0f0);
-		//
+		//Format
+		font = Assets.getFont ("assets/data/04B_03__.TTF");//TODO Change this for an app configuration (XML file)
+		format = new TextFormat (font.fontName, 10, 0xf0f0f0);//TODO Change this for an app configuration (XML file)
+		/////Label
 		label = new TextField();
-		label.defaultTextFormat = format;
 		label.selectable = false;
-		label.embedFonts = true;
 		label.autoSize = TextFieldAutoSize.LEFT;
-		label.x = x;
-		label.y = y;
-		label.text =text;
-		//nme.Lib.stage.addChild(label);
-		this.addChild(label);
-		//
-		this.width = label.width;
-		this.height = label.height;
+		label.defaultTextFormat = format;
+		label.text = text;
+		
+		addChild(label);
 	}
 
 }

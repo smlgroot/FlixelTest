@@ -2,6 +2,8 @@ package com.smlg;
 import com.kalimeradev.test.states.MenuState;
 import nme.display.Sprite;
 import nme.events.Event;
+import nme.text.TextField;
+import nme.text.TextFieldAutoSize;
 /**
  * ...
  * @author smlg
@@ -9,39 +11,26 @@ import nme.events.Event;
 
 class SmGame extends Sprite
 {
+
 	//
 	public var currentstate:SmState;
-	//
-	public var forceDebugger:Bool;
-
-	public function new(sizeX:Float, sizeY:Float,initialState:Class<SmState>, zoom:Float,frameRate:Int=60 ) 
+	
+	public function new(stageWidth:Float=0,stageHeight:Float=0,initialState:Class<SmState>) 
 	{
 		super();
-		SmH.width = sizeX*zoom;
-		SmH.height = sizeY * zoom;
-		//
+		/////Screen
+		SmH.width =stageWidth;
+		SmH.height = stageHeight;
+		////State
 		//Creating innitial state.
-		//currentstate = Type.createInstance(initialState, []);
-		currentstate = new MenuState();
-		currentstate.create();
+		currentstate = Type.createInstance(initialState, []);
+		//currentstate.create();
 		addChild(currentstate);
-
-		//
-		addEventListener (Event.ENTER_FRAME, this_onEnterFrame);
+		
+		//var menuState:SmState = new MenuState();	
+		//addChild(menuState);	
 
 	}
 
 
-	private function this_onEnterFrame (event:Event):Void {
-		//Drawing phase.
-		//draw();
-		//update phase
-		//update();
-	}
-	public function draw():Void {
-		//currentstate.draw(this.graphics);
-	}
-	public function update():Void {
-		currentstate.update();
-	}
 }
