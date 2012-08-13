@@ -20,6 +20,8 @@ import nme.Assets;
 import nme.events.MouseEvent;
 import feffects.Tween;
 import feffects.easing.Quad;
+///Actuate
+import com.eclecticdesignstudio.motion.Actuate;
 
 class MenuState extends SmState
 {
@@ -66,9 +68,15 @@ class MenuState extends SmState
 
 	private function onPlayB(e):Void {
 		trace("onPlayB()");
-		var tween:Tween = new Tween(SmH.width,SmH.width/2, 1000, Quad.easeOut);
+		/*var tween:Tween = new Tween(SmH.width,SmH.width/2, 1000, Quad.easeOut);
 		tween.onUpdate(moveB);
-		tween.start();
+		tween.start();*/
+		
+		///
+		
+		//Actuate.transform (noButton, 1).color (0xFF0000, 0.5);
+		Actuate.tween (noButton, 5, { x: 200 ,alpha:0} ).repeat(5);
+
 	}
 	private function moveB(e):Void {
 		noButton.x = e;
