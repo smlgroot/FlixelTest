@@ -1,6 +1,7 @@
 package com.kalimeradev.test;
 
 import com.kalimeradev.test.states.MenuState;
+import com.kalimeradev.test.states.PlayState;
 import com.smlg.SmGame;
 import com.smlg.SmState;
 import com.smlg.SmButton;
@@ -43,7 +44,7 @@ class Main extends Sprite
 		var ratioY:Float = stageHeight / 240;
 		var ratio:Float = Math.min(ratioX, ratioY);
 		////Game
-		var game:SmGame= new SmGame(stageWidth,stageHeight,MenuState);
+		var game:SmGame= SmH.createGame(stageWidth,stageHeight,MenuState);
 		addChild(game);
 		////FPS
 		var fps:FPS = new FPS();

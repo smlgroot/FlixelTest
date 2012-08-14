@@ -4,6 +4,7 @@ package com.kalimeradev.test.states;
  * ...
  * @author smlg
  */
+import com.smlg.SmGame;
 import com.smlg.SmState;
 import com.smlg.SmH;
 import com.smlg.SmText;
@@ -54,12 +55,11 @@ class MenuState extends SmState
 		//yesButton.y = 50;	
 		yesButton.width = 70;
 		yesButton.height = 70;
-		var tween:Tween = new Tween(0, SmH.width/2-yesButton.width, 1000, Quad.easeOut);
+		/*var tween:Tween = new Tween(0, SmH.width/2-yesButton.width, 1000, Quad.easeOut);
 		tween.onUpdate(move);
-		tween.start();
-		/*var playstate:PlayState = new PlayState();
-		playstate.titleText = "1";
-		SmH.switchState(playstate);*/
+		tween.start();*/
+		var playstate:PlayState = new PlayState();
+		SmH.switchState(playstate);
 	}
 
 	private function move(e):Void {
