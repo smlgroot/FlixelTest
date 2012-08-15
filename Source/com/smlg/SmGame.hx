@@ -21,10 +21,18 @@ class SmGame extends Sprite
 		/////Screen
 		SmH.width =stageWidth;
 		SmH.height = stageHeight;
+		//////BackGround
+		var background:Sprite = new Sprite();
+		/*background.x = 0;
+		background.y = 0;
+		background.width = SmH.width;
+		background.height = SmH.height;*/
+		background.graphics.beginFill(0xffffff, 1 );
+		background.graphics.drawRect(0,0,SmH.width,SmH.height);
+		addChild(background);
 		////State
 		//Creating innitial state.
 		currentstate = Type.createInstance(initialState, []);
-		//currentstate.create();
 		addChild(currentstate);
 		
 		//var menuState:SmState = new MenuState();	

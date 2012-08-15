@@ -54,7 +54,7 @@ class PlayState extends SmState
 		backButton = new SmButton("BACK", 50, 50);
 		backButton.x = SmH.width/2 -backButton.width/2;
 		backButton.y = SmH.height/2 -backButton.height/2;
-		backButton.addEventListener(MouseEvent.CLICK, onPlayBack);
+		//backButton.addEventListener(MouseEvent.CLICK, onPlayBack);
 		addChild(backButton);
 		////////
 		trace("new");
@@ -69,7 +69,12 @@ class PlayState extends SmState
 		SmH.switchState(menuState);*/
 		
 		trace(e.stageY+"+++"+e.localY);
-		createCircle(e.stageX,e.stageY ,10,true);
+		createCircle(e.stageX, e.stageY , 10, true);
+		
+		/*var g:B2Vec2 = World.getGravity();
+		g.y = g.y * -1;
+		
+		World.setGravity(g);*/
 	}
 	private function initialize ():Void {
 	 
@@ -81,7 +86,7 @@ class PlayState extends SmState
 	}
 	private function construct ():Void {
 		
-		World = new B2World (new B2Vec2 (0, 10.0), true);
+		World = new B2World (new B2Vec2 (0, 10.0), false);
 	 
 		addChild (PhysicsDebug);
 	 
@@ -99,6 +104,7 @@ class PlayState extends SmState
 		bodyTest = createCircle (105, 100, 50, true);
 	 createMap();
 		addEventListener (Event.ENTER_FRAME, this_onEnterFrame);
+		SmH.game.addEventListener(MouseEvent.CLICK, onPlayBack);
 	 
 	}
 	private function createBox (x:Float, y:Float, width:Float, height:Float, dynamicBody:Bool):B2Body {
@@ -117,8 +123,8 @@ class PlayState extends SmState
 
 		var fixtureDefinition = new B2FixtureDef ();
 		fixtureDefinition.shape = polygon;
-		fixtureDefinition.density = 0;
-		fixtureDefinition.friction = 0.3;
+		fixtureDefinition.density = 1;
+		fixtureDefinition.friction = 0.1;
 	 
 		var body:B2Body = World.createBody (bodyDefinition);
 		body.createFixture (fixtureDefinition);
@@ -140,8 +146,8 @@ class PlayState extends SmState
 		
 		var fixtureDefinition = new B2FixtureDef ();
 		fixtureDefinition.shape = circle;
-		fixtureDefinition.restitution = 2;
-		fixtureDefinition.density = 0;
+		//fixtureDefinition.restitution = 2;
+		fixtureDefinition.density = 1;
 		fixtureDefinition.friction = .1;
 		
 		var body = World.createBody (bodyDefinition);
@@ -161,18 +167,16 @@ class PlayState extends SmState
 		
 // This an edge shape with ghost vertices.
 
-var v0:B2Vec2 = new B2Vec2(1.7, 0.0);
+var v0:B2Vec2 = new B2Vec2(0* PHYSICS_SCALE, 100* PHYSICS_SCALE);
 
 var v1:B2Vec2 = new B2Vec2(100* PHYSICS_SCALE, 100* PHYSICS_SCALE);
 
-var v2:B2Vec2 = new B2Vec2(300* PHYSICS_SCALE, 150* PHYSICS_SCALE);
+var v2:B2Vec2 = new B2Vec2(200* PHYSICS_SCALE, 200* PHYSICS_SCALE);
 
-var v3:B2Vec2 = new B2Vec2(-1.7, 0.4);
+var v3:B2Vec2 = new B2Vec2(0* PHYSICS_SCALE, 100* PHYSICS_SCALE);
 
  
- 
-
-var edge:B2PolygonShape = B2PolygonShape.asEdge(v1,v2);
+var edge:B2PolygonShape = B2PolygonShape.asArray([v0, v1, v2, v3], 3);
 
 /*edge.m_hasVertex0 = true;
 
