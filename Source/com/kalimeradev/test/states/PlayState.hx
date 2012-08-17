@@ -61,7 +61,7 @@ class PlayState extends SmState
 		//backButton.addEventListener(MouseEvent.CLICK, onPlayBack);
 		addChild(backButton);
 		////////
-		trace("new");
+		////trace("new");
 		
 		//////////////
 			initialize ();
@@ -69,38 +69,26 @@ class PlayState extends SmState
 		///////////////
 	}
 	public var mouseJoint:B2MouseJoint;
-	public function onPlayBack(e:MouseEvent):Void {
-		
+	public var digging:Bool;
+	public function onMouseDown(e:MouseEvent):Void {
+		digging = true;
 		
 		//bodyTest.applyForce(new B2Vec2(-50,-50),bodyTest.getWorldCenter());
-		//trace("force applied");
+		////trace("force applied");
 		///////
 		/*var menuState:MenuState= new MenuState();
 		SmH.switchState(menuState);*/
 		
-		//trace(e.stageY+"+++"+e.localY);
+		////trace(e.stageY+"+++"+e.localY);
 		//createCircle(e.stageX, e.stageY , 10, true);
 		
 		/*var g:B2Vec2 = World.getGravity();
 		g.y = g.y * -1;
 		
 		World.setGravity(g);*/
+
 		
-		GetBodyAtMouse(false, e);
-		if (queriedBody!=null) {
-				var mouseJointDef:B2MouseJointDef=new B2MouseJointDef();
-				mouseJointDef.bodyA=World.getGroundBody();
-				mouseJointDef.bodyB=queriedBody;
-				mouseJointDef.target.set(e.stageX*PHYSICS_SCALE, e.stageX*PHYSICS_SCALE);
-				mouseJointDef.maxForce=30000;
-				//mouseJointDef.timeStep=m_timeStep;
-				mouseJointDef.frequencyHz =  30;
-				//mouseJoint =
-				mouseJoint= cast(World.createJoint(mouseJointDef),B2MouseJoint);
-				trace("createJoint");
-		}
-		
-		trace("finish GetBodyAtMouse");
+		//trace("finish GetBodyAtMouse");
 	}
 	private function initialize ():Void {
 	 
@@ -112,7 +100,7 @@ class PlayState extends SmState
 	}
 	private function construct ():Void {
 		
-		World = new B2World (new B2Vec2 (0, 10.0), false);
+		World = new B2World (new B2Vec2 (0, 50.0), false);
 	 
 		addChild (PhysicsDebug);
 	 
@@ -131,9 +119,9 @@ class PlayState extends SmState
 	 createMap();
 	 createWalls();
 		addEventListener (Event.ENTER_FRAME, this_onEnterFrame);
-		SmH.game.addEventListener(MouseEvent.MOUSE_DOWN, onPlayBack);
+		SmH.game.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		SmH.game.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-		SmH.game.addEventListener(MouseEvent.MOUSE_UP, onMouseDown);
+		SmH.game.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 	 
 	}
 	private function createBox (x:Float, y:Float, width:Float, height:Float, dynamicBody:Bool):B2Body {
@@ -184,22 +172,22 @@ class PlayState extends SmState
 		return body;
 	}
 	
-	private function createMap():Void {
-		trace("createMap");
+	private function createTile(x:Float,y:Float,width:Float,height:Float):Void {
+		////trace("createTile");
 		var bodyDefinition = new B2BodyDef ();
-		bodyDefinition.position.set (100 * PHYSICS_SCALE, 100 * PHYSICS_SCALE);
+		bodyDefinition.position.set (x * PHYSICS_SCALE, y* PHYSICS_SCALE);
 
 		// This an edge shape with ghost vertices.
 
-		var v0:B2Vec2 = new B2Vec2(0* PHYSICS_SCALE, 100* PHYSICS_SCALE);
+		var v0:B2Vec2 = new B2Vec2(0* PHYSICS_SCALE, 0* PHYSICS_SCALE);
 
-		var v1:B2Vec2 = new B2Vec2(100* PHYSICS_SCALE, 100* PHYSICS_SCALE);
+		var v1:B2Vec2 = new B2Vec2((0+width)* PHYSICS_SCALE, 0* PHYSICS_SCALE);
 
-		var v2:B2Vec2 = new B2Vec2(200* PHYSICS_SCALE, 200* PHYSICS_SCALE);
+		var v2:B2Vec2 = new B2Vec2((0 + width) * PHYSICS_SCALE, (0 + height ) * PHYSICS_SCALE);
 
-		var v3:B2Vec2 = new B2Vec2(200* PHYSICS_SCALE, 300* PHYSICS_SCALE);
+		var v3:B2Vec2 = new B2Vec2(0* PHYSICS_SCALE, (0 + height )* PHYSICS_SCALE);
 		
-		var v4:B2Vec2 = new B2Vec2(0* PHYSICS_SCALE, 100* PHYSICS_SCALE);
+		var v4:B2Vec2 = new B2Vec2(0 * PHYSICS_SCALE,  0 * PHYSICS_SCALE);
 
 		var edge:B2PolygonShape = B2PolygonShape.asArray([v0, v1, v2, v3,v4], 4);
 		var edge2:B2EdgeShape = new B2EdgeShape(v0, v1);
@@ -211,11 +199,22 @@ class PlayState extends SmState
 	 
 		var body:B2Body = World.createBody (bodyDefinition);
 		body.createFixture (fixtureDefinition);
-
+		body.setUserData(1);
 	}
-	
+
+	private function createMap():Void {
+		var tilesNum:Int = 50;
+		var tileSize:Float = SmH.width / tilesNum;
+		var i:Int;
+		var j:Int;
+		for(j in 0...5){
+			for (i in 0 ... tilesNum) {
+				createTile(i*tileSize, (SmH.height/2+(j*tileSize)), tileSize, tileSize);
+			}
+		}
+	}
 	private function createWalls():Void {
-		trace("createWalls");
+		////trace("createWalls");
 		 
 		createEdge(0,0,new B2Vec2(0, 0), new B2Vec2(0,SmH.height));//Left.
 		createEdge(0,0,new B2Vec2(0,0), new B2Vec2(SmH.width,0));//Top.
@@ -225,7 +224,7 @@ class PlayState extends SmState
 
 	}
 	private function createEdge(x:Float,y:Float,v1:B2Vec2,v2:B2Vec2):Void {
-		trace("createEdge");
+		////trace("createEdge");
 		var bodyDefinition = new B2BodyDef ();
 		bodyDefinition.position.set (x * PHYSICS_SCALE, y * PHYSICS_SCALE);
 		 
@@ -288,9 +287,11 @@ class PlayState extends SmState
 		}
 		public var queriedBody:B2Body;
 		public function callBackQueryAABB(fixture:B2Fixture):Bool {
-			trace(fixture);
-			queriedBody = fixture.getBody();
-			return fixture!=null;
+			if (fixture.getBody().getUserData()!=null) {
+				trace(fixture.getBody().getUserData());
+				queriedBody = fixture.getBody();
+			}
+			return true;
 		}
 		
 		public var mouseXWorldPhys:Float;
@@ -298,13 +299,36 @@ class PlayState extends SmState
 		
 		public function onMouseMove(e:MouseEvent) {
 			mouseXWorldPhys=e.stageX*PHYSICS_SCALE;
-			mouseYWorldPhys=e.stageY*PHYSICS_SCALE;
+			mouseYWorldPhys = e.stageY * PHYSICS_SCALE;
+			
+			if(digging){
+				GetBodyAtMouse(false, e);
+				if (queriedBody != null) {
+					trace(queriedBody.getUserData());
+					/*	var mouseJointDef:B2MouseJointDef=new B2MouseJointDef();
+						mouseJointDef.bodyA=World.getGroundBody();
+						mouseJointDef.bodyB=queriedBody;
+						mouseJointDef.target.set(e.stageX*PHYSICS_SCALE, e.stageY*PHYSICS_SCALE);
+						mouseJointDef.maxForce=30000;
+						//mouseJointDef.timeStep=m_timeStep;
+						//mouseJointDef.frequencyHz =  30;
+						//mouseJoint =
+						mouseJoint= cast(World.createJoint(mouseJointDef),B2MouseJoint);
+						//trace("createJoint");*/
+						if (queriedBody.getUserData() == 1) {
+							World.destroyBody(queriedBody);
+							queriedBody = null;
+						}
+				}
+			}
 		}
-		public function onMouseDown(e:MouseEvent) {
+		public function onMouseUp(e:MouseEvent) {
 			if (mouseJoint!=null) {
 				World.destroyJoint(mouseJoint);
 				mouseJoint = null;
-				trace("onMouseDown");
+				queriedBody = null;
+				//trace("onMouseDown");
 			}
+			digging = false;
 		}
 }
