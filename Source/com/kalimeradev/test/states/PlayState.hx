@@ -64,73 +64,147 @@ class PlayState extends SmState
 	}
 	private function construct ():Void {
 		
-		World = new B2World (new B2Vec2 (0, 10.0), false);
+		World = new B2World (new B2Vec2 (0, 0.0), false);
 	 
 		addChild (PhysicsDebug);
 	 
 		var debugDraw = new B2DebugDraw ();
 		debugDraw.setSprite (PhysicsDebug);
 		debugDraw.setDrawScale (1 / PHYSICS_SCALE);
-		debugDraw.setFlags (B2DebugDraw.e_shapeBit|B2DebugDraw.e_centerOfMassBit| B2DebugDraw.e_jointBit |B2DebugDraw.e_pairBit| B2DebugDraw.e_controllerBit);
-		//debugDraw.setFlags (B2DebugDraw.e_shapeBit|B2DebugDraw.e_centerOfMassBit);
+		//debugDraw.setFlags (B2DebugDraw.e_shapeBit|B2DebugDraw.e_centerOfMassBit| B2DebugDraw.e_jointBit |B2DebugDraw.e_pairBit| B2DebugDraw.e_controllerBit);
+		//debugDraw.setFlags (B2DebugDraw.e_shapeBit | B2DebugDraw.e_centerOfMassBit);
+		debugDraw.setFlags (B2DebugDraw.e_shapeBit| B2DebugDraw.e_jointBit );
 		//debugDraw.setFlags (B2DebugDraw.e_centerOfMassBit);
 		World.setDebugDraw (debugDraw);
 	 
 		//createBox (250, 100, 100, 100, true);
-		//createCircle (100, 10, 20, true);
+		//createCircle (200, 100, 20, true);
 		//bodyTest = createCircle (105, 100, 30, true);
 		createWalls();
-		createL();
+		createL(SmH.width/2,SmH.height/2);
+		createL(SmH.width / 2, SmH.height / 4);
+		createVerticalRubber(100,100,100,400);
+		createVerticalRubber(500,100,500,400);
+		createHorizontalRubber(110,100,490,100);
+		createHorizontalRubber(110,400,490,400);
 		addEventListener (Event.ENTER_FRAME, this_onEnterFrame);
 		SmH.game.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		SmH.game.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 		SmH.game.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 	 
 	}
-	private function createL():Void {
-		var defHeadTorse:B2RevoluteJointDef = new B2RevoluteJointDef();
-		var defTorseArmA:B2RevoluteJointDef = new B2RevoluteJointDef();
+
+	private function createVerticalRubber(x1:Float, y1:Float,x2:Float, y2:Float):Void {
+		var wAnc:Float = 10;
+		var hAnc:Float = 10;
 		
-		var head:B2Body=createCircle(80, 40, 10, true);
-		var torseA:B2Body=createBox(80, 60, 40, 20, true);
-		var torseB:B2Body=createBox(80, 80, 40, 20, true);
-		var torseC:B2Body=createBox(80, 100, 40, 20, true);
-		var legA:B2Body=createBox(70, 130, 20, 40, true);
-		var legB:B2Body=createBox(90, 130, 20, 40, true);
+		var w:Float = wAnc;
+		var h:Float = (Math.abs((x2-x1)-(y2-y1))-hAnc)/10;
+
+		var ancA=createBox(x1, y1, wAnc, hAnc, false,2,-1);//AnchorA
+
+		var xxx:Float = y1 + (hAnc / 2) + (h / 2);
+		var lastBody:B2Body = ancA;
+		var currentBody:B2Body;
+		var hAux:Float = hAnc;
+		for (i in 0 ... 10) {
+			currentBody = createBox(x1, xxx, w, h, true,2,-1);
+			var tt:Float = currentBody.getWorldCenter().x;
+			var rr:Float = currentBody.getWorldCenter().y-( (hAux/2)*PHYSICS_SCALE);
+			var hh:Float = lastBody.getWorldCenter().x;
+			var uu:Float = lastBody.getWorldCenter().y + ( 10*PHYSICS_SCALE);
+			//trace((h/2));
+			//trace((h/2)*PHYSICS_SCALE);
+			//createDistanceJoint(lastBody, currentBody,new B2Vec2(hh,uu), new B2Vec2(tt,rr));
+			createRevoluteJoint(lastBody, currentBody,new B2Vec2(tt,rr));
+			lastBody = currentBody;
+			xxx = xxx + h;
+			hAux = h;
+		}
 		
-		/*defHeadTorse.initialize(head, torse, new B2Vec2(100*PHYSICS_SCALE, 150*PHYSICS_SCALE));
-		defTorseArmA.initialize(torse, armA, new B2Vec2(50*PHYSICS_SCALE, 250*PHYSICS_SCALE));
-		
-		World.createJoint(defHeadTorse);
-		World.createJoint(defTorseArmA);*/
-		
-		var jointTorseHeadTorseA:B2DistanceJointDef = new B2DistanceJointDef();
-		jointTorseHeadTorseA.initialize(head, torseA, new B2Vec2(80 * PHYSICS_SCALE, 40 * PHYSICS_SCALE), new B2Vec2(80 * PHYSICS_SCALE, 60 * PHYSICS_SCALE));
-		jointTorseHeadTorseA.collideConnected = true;
-		var jointTorseAB:B2DistanceJointDef = new B2DistanceJointDef();
-		jointTorseAB.initialize(torseA,torseB,new B2Vec2(80*PHYSICS_SCALE, 60*PHYSICS_SCALE),new B2Vec2(80*PHYSICS_SCALE, 80*PHYSICS_SCALE));
-		jointTorseAB.collideConnected = true;
-		var jointTorseBC:B2DistanceJointDef = new B2DistanceJointDef();
-		jointTorseBC.initialize(torseB,torseC,new B2Vec2(80*PHYSICS_SCALE, 80*PHYSICS_SCALE),new B2Vec2(80*PHYSICS_SCALE, 100*PHYSICS_SCALE));
-		jointTorseBC.collideConnected = true;
-		
-		var jointTorceCLegA:B2DistanceJointDef = new B2DistanceJointDef();
-		jointTorceCLegA.initialize(torseC,legA,new B2Vec2(70*PHYSICS_SCALE, 100*PHYSICS_SCALE),new B2Vec2(70*PHYSICS_SCALE, 105*PHYSICS_SCALE));
-		jointTorceCLegA.collideConnected = true;
-		jointTorceCLegA.localAnchorB.set(0,1);
-		
-		var jointTorceCLegB:B2DistanceJointDef = new B2DistanceJointDef();
-		jointTorceCLegB.initialize(torseC,legB,new B2Vec2(90*PHYSICS_SCALE, 100*PHYSICS_SCALE),new B2Vec2(90*PHYSICS_SCALE, 105*PHYSICS_SCALE));
-		jointTorceCLegB.collideConnected = true;
-		jointTorceCLegB.localAnchorB.set(0,1);
-		
-		World.createJoint(jointTorseHeadTorseA);
-		World.createJoint(jointTorseAB);
-		World.createJoint(jointTorseBC);
-		World.createJoint(jointTorceCLegA);
-		World.createJoint(jointTorceCLegB);
+		currentBody=createBox(x2, y2, wAnc, hAnc, false,2,-1);//AnchorB
+		//createDistanceJoint(lastBody, currentBody, lastBody.getWorldCenter(), currentBody.getWorldCenter());
+		createRevoluteJoint(lastBody, currentBody,currentBody.getWorldCenter());
 	}
-	private function createBox (x:Float, y:Float, width:Float, height:Float, dynamicBody:Bool):B2Body {
+	private function createHorizontalRubber(x1:Float, y1:Float,x2:Float, y2:Float):Void {
+		var wAnc:Float = 10;
+		var hAnc:Float = 10;
+		
+		var w:Float = (Math.abs((x2-x1)-(y2-y1))-hAnc)/10;
+		var h:Float = wAnc;
+
+		var ancA=createBox(x1, y1, wAnc, hAnc, false,2,-1);//AnchorA
+		
+		var xxx:Float = x1 + (wAnc / 2) + (w / 2);
+		var lastBody:B2Body = ancA;
+		var currentBody:B2Body;
+		var wAux:Float = wAnc;
+		for (i in 0 ... 10) {
+			currentBody = createBox(xxx, y1, w, h, true,2,-1);
+			var tt:Float = currentBody.getWorldCenter().x-( (wAux/2)*PHYSICS_SCALE);
+			var rr:Float = currentBody.getWorldCenter().y;
+			var hh:Float = lastBody.getWorldCenter().x;
+			var uu:Float = lastBody.getWorldCenter().y + ( 10*PHYSICS_SCALE);
+			//trace((h/2));
+			//trace((h/2)*PHYSICS_SCALE);
+			//createDistanceJoint(lastBody, currentBody,new B2Vec2(hh,uu), new B2Vec2(tt,rr));
+			createRevoluteJoint(lastBody, currentBody,new B2Vec2(tt,rr));
+			lastBody = currentBody;
+			xxx = xxx + w;
+			wAux = w;
+		}
+		
+		currentBody=createBox(x2, y2, wAnc, hAnc, false,2,-1);//AnchorB
+		//createDistanceJoint(lastBody, currentBody, lastBody.getWorldCenter(), currentBody.getWorldCenter());
+		createRevoluteJoint(lastBody, currentBody,currentBody.getWorldCenter());
+	}
+	private function createRevoluteJoint(bA:B2Body,bB:B2Body,anchor:B2Vec2):Void {
+		var joint:B2RevoluteJointDef = new B2RevoluteJointDef();
+		joint.initialize(bA, bB, anchor);
+		//joint.localAnchorA.set(0,0);
+		//joint.localAnchorB.set(0,1);
+		//joint.collideConnected = true;
+		//joint.enableLimit = true;
+		//joint.upperAngle = 90 * 180 / Math.PI;
+		//joint.lowerAngle = 90 * 180 / Math.PI;
+		//joint.referenceAngle= 10 * 180 / Math.PI;
+		//joint.dampingRatio = 5;
+		//joint.frequencyHz = 60;
+		
+		//joint.localAnchorB.set(0.0,-1.0);
+      //  joint.enableMotor = true;
+       // joint.motorSpeed = 0;
+       // joint.enableLimit = true;
+       // joint.lowerAngle = (45* 180 )/ Math.PI;
+        //joint.upperAngle = (180* 180) / Math.PI;
+		
+		World.createJoint(joint);
+	}
+	private function createDistanceJoint(bA:B2Body,bB:B2Body,anchorA:B2Vec2, anchorB:B2Vec2):Void {
+		var joint:B2DistanceJointDef = new B2DistanceJointDef();
+		joint.initialize(bA, bB, anchorA, anchorB);
+		//joint.localAnchorA.set(0,0);
+		//joint.localAnchorB.set(0,1);
+		joint.collideConnected = true;
+		//joint.dampingRatio = 5;
+		//joint.frequencyHz = 60;
+		World.createJoint(joint);
+	}
+	private function createL(posX:Float, posY:Float):Void {
+		//var head:B2Body=createBox(posX, posY, 10,10, true,1,1);
+		var torse:B2Body = createCircle(posX, posY + 20, 15, true,-1,2);
+		/*var legA:B2Body = createBox(posX - 10, posY + 45, 10, 20, true,1,1);
+		var legB:B2Body = createBox(posX + 10, posY + 45, 10, 20, true,1,1);
+		
+		var headBottom:Float = head.getWorldCenter().y+(5*PHYSICS_SCALE);
+		createRevoluteJoint(head,torse,new B2Vec2(head.getWorldCenter().x,headBottom));
+		
+		var torseBottomX:Float = torse.getWorldCenter().x-(7.5*PHYSICS_SCALE);
+		var torseBottomY:Float = torse.getWorldCenter().y+(15*PHYSICS_SCALE);
+		createRevoluteJoint(torse,legA,new B2Vec2(torseBottomX,torseBottomY));*/
+
+	}
+	private function createBox (x:Float, y:Float, width:Float, height:Float, dynamicBody:Bool,maskBits:Int,categoryBits:Int):B2Body {
 	 
 		var bodyDefinition = new B2BodyDef ();
 		bodyDefinition.position.set (x * PHYSICS_SCALE, y * PHYSICS_SCALE);
@@ -146,15 +220,23 @@ class PlayState extends SmState
 
 		var fixtureDefinition = new B2FixtureDef ();
 		fixtureDefinition.shape = polygon;
-		fixtureDefinition.density = .5;
+		fixtureDefinition.density = .1;
 		fixtureDefinition.friction = 0.1;
-	 
+		fixtureDefinition.restitution = .5;
+		
+		if(maskBits>0){
+			fixtureDefinition.filter.maskBits = maskBits;
+		}
+		if(categoryBits>0){
+			fixtureDefinition.filter.categoryBits = categoryBits;
+		}
+		
 		var body:B2Body = World.createBody (bodyDefinition);
 		body.createFixture (fixtureDefinition);
-		
+
 		return body;
 	}
-	private function createCircle (x:Float, y:Float, radius:Float, dynamicBody:Bool):B2Body {
+	private function createCircle (x:Float, y:Float, radius:Float, dynamicBody:Bool,maskBits:Int,categoryBits:Int):B2Body {
 		
 		var bodyDefinition = new B2BodyDef ();
 		bodyDefinition.position.set (x * PHYSICS_SCALE, y * PHYSICS_SCALE);
@@ -173,8 +255,17 @@ class PlayState extends SmState
 		fixtureDefinition.density = .5;
 		fixtureDefinition.friction = .1;
 		
+		if(maskBits>0){
+			fixtureDefinition.filter.maskBits = maskBits;
+		}
+		if(categoryBits>0){
+			fixtureDefinition.filter.categoryBits = categoryBits;
+		}
+		
 		var body = World.createBody (bodyDefinition);
 		body.createFixture (fixtureDefinition);
+		body.setBullet(false);
+		
 		return body;
 	}
 	
