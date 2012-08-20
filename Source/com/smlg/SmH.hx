@@ -15,7 +15,8 @@ class SmH
 	public static var width:Float;
 	
 	public static function createGame(stageWidth:Float = 0, stageHeight:Float = 0, initialState:Class<SmState>):SmGame {
-		game = new SmGame(stageWidth, stageHeight, initialState);
+		game = new SmGame(stageWidth, stageHeight);
+		game.createInitialState(initialState);
 		return game;
 	}
 	public static function switchState(state:SmState):Void {

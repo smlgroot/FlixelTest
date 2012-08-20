@@ -44,7 +44,7 @@ class Main extends Sprite
 		var ratioY:Float = stageHeight / 240;
 		var ratio:Float = Math.min(ratioX, ratioY);
 		////Game
-		var game:SmGame= SmH.createGame(stageWidth,stageHeight,MenuState);
+		var game:SmGame= SmH.createGame(stageWidth,stageHeight,PlayState);
 		addChild(game);
 		////FPS
 		var fps:FPS = new FPS();

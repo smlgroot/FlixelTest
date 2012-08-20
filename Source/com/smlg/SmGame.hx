@@ -15,7 +15,7 @@ class SmGame extends Sprite
 	//
 	public var currentstate:SmState;
 	
-	public function new(stageWidth:Float=0,stageHeight:Float=0,initialState:Class<SmState>) 
+	public function new(stageWidth:Float=0,stageHeight:Float=0) 
 	{
 		super();
 		/////Screen
@@ -30,15 +30,16 @@ class SmGame extends Sprite
 		background.graphics.beginFill(0xffffff, 1 );
 		background.graphics.drawRect(0,0,SmH.width,SmH.height);
 		addChild(background);
-		////State
-		//Creating innitial state.
-		currentstate = Type.createInstance(initialState, []);
-		addChild(currentstate);
 		
 		//var menuState:SmState = new MenuState();	
 		//addChild(menuState);	
 
 	}
-
+	public function createInitialState(initialState:Class<SmState>):Void {
+		////State
+		//Creating innitial state.
+		currentstate = Type.createInstance(initialState, []);
+		addChild(currentstate);
+	}
 
 }
