@@ -9,10 +9,12 @@ import com.eclecticdesignstudio.motion.Actuate;
 
 class SmH 
 {
+	public static var PHYSICS_SCALE:Float = 1 / 30;
 	public static var game:SmGame;
 	/////
 	public static var height:Float;
 	public static var width:Float;
+	//
 	
 	public static function createGame(stageWidth:Float = 0, stageHeight:Float = 0, initialState:Class<SmState>):SmGame {
 		game = new SmGame(stageWidth, stageHeight);

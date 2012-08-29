@@ -2,6 +2,7 @@ package com.kalimeradev.test;
 
 import com.kalimeradev.test.states.MenuState;
 import com.kalimeradev.test.states.PlayState;
+import com.kalimeradev.test.states.TestState;
 import com.smlg.SmGame;
 import com.smlg.SmState;
 import com.smlg.SmButton;
@@ -44,14 +45,14 @@ class Main extends Sprite
 		var ratioY:Float = stageHeight / 240;
 		var ratio:Float = Math.min(ratioX, ratioY);
 		////Game
-		var game:SmGame= SmH.createGame(stageWidth,stageHeight,PlayState);
+		var game:SmGame= SmH.createGame(stageWidth,stageHeight,TestState);
 		addChild(game);
 		////FPS
-		var fps:FPS = new FPS();
+		/*var fps:FPS = new FPS();
 		addChild(fps);
 		fps.x = 20;
 		fps.y = 20;
-		fps.textColor = 0xffffff;
+		fps.textColor = 0xffffff;*/
 		////
 		//
 		var cross:Sprite = new Sprite();

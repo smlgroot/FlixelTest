@@ -14,6 +14,9 @@ class SmGame extends Sprite
 
 	//
 	public var currentstate:SmState;
+	//
+	
+	///
 	
 	public function new(stageWidth:Float=0,stageHeight:Float=0) 
 	{

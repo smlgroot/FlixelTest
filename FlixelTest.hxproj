@@ -31,7 +31,7 @@
     <library name="nme" />
     <library name="feffects" />
     <library name="actuate" />
-    <library name="nape" />
+    <library name="box2d" />
   </haxelib>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
