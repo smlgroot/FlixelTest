@@ -24,7 +24,7 @@
     <option flashStrict="False" />
     <option mainClass="ApplicationMain" />
     <option enabledebug="False" />
-    <option additional="-swf-version 10.1" />
+    <option additional="-swf-version 10.3" />
   </build>
   <!-- haxelib libraries -->
   <haxelib>

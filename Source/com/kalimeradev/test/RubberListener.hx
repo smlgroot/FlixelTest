@@ -1,17 +1,21 @@
 package com.kalimeradev.test;
-
+//
+import com.smlg.SmGame;
+//
 import box2D.collision.B2AABB;
 import box2D.dynamics.B2Body;
 import box2D.dynamics.B2ContactListener;
 import box2D.dynamics.contacts.B2Contact;
 //
+
+//
 import com.smlg.SmH;
-class MyContactListener extends B2ContactListener
+class RubberListener extends B2ContactListener
 {
-	private var listener:Bool->Void;
+	private var listener:Int->Bool->Void;
 	private var id:Int;
 	
-	public function new(listener:Bool->Void) {
+	public function new(listener:Int->Bool->Void) {
 		super();
 		this.listener = listener;
 	}
@@ -26,7 +30,7 @@ class MyContactListener extends B2ContactListener
 
 			res = testXPosLessThan(bodyEdge, bodyL);
 			if(res==true){
-				this.listener(res);
+				this.listener(bodyEdge.getUserData(),true);
 			}
 		}
 	}
@@ -43,7 +47,7 @@ class MyContactListener extends B2ContactListener
 
 			res = testXPosLessThan(bodyL,bodyEdge);
 
-			this.listener(res);
+			this.listener(bodyEdge.getUserData(),false);
 
 		}
 	}
@@ -62,10 +66,10 @@ class MyContactListener extends B2ContactListener
 	}
 	private function testXPosLessThan(bodyA:B2Body,bodyB:B2Body):Bool {
 		var res:Bool = false;
-		var xA:Float = bodyA.getPosition().x / SmH.PHYSICS_SCALE;
-		var yA:Float = bodyA.getPosition().y / SmH.PHYSICS_SCALE;
-		var xB:Float = bodyB.getPosition().x / SmH.PHYSICS_SCALE;
-		var yB:Float = bodyB.getPosition().y / SmH.PHYSICS_SCALE ;
+		var xA:Float = bodyA.getPosition().x / SmGame.PHYSICS_SCALE;
+		var yA:Float = bodyA.getPosition().y / SmGame.PHYSICS_SCALE;
+		var xB:Float = bodyB.getPosition().x / SmGame.PHYSICS_SCALE;
+		var yB:Float = bodyB.getPosition().y / SmGame.PHYSICS_SCALE ;
 
 		if (xA < xB) {
 			res = true;

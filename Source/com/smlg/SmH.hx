@@ -1,7 +1,11 @@
 package com.smlg;
 
 
+
+//
 import com.eclecticdesignstudio.motion.Actuate;
+//
+import nme.events.MouseEvent;
 /**
  * ...
  * @author smlg
@@ -9,8 +13,7 @@ import com.eclecticdesignstudio.motion.Actuate;
 
 class SmH 
 {
-	public static var PHYSICS_SCALE:Float = 1 / 30;
-	public static var game:SmGame;
+	private static var game:SmGame;
 	/////
 	public static var height:Float;
 	public static var width:Float;
@@ -32,4 +35,5 @@ class SmH
 		//state.alpha = 0;
 		//Actuate.tween (state, 1, {alpha:1} );
 	}
+
 }

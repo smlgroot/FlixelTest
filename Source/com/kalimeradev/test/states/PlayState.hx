@@ -90,9 +90,7 @@ class PlayState extends SmState
 		createHorizontalRubber(110,100,490,100);
 		createHorizontalRubber(110,400,490,400);
 		addEventListener (Event.ENTER_FRAME, this_onEnterFrame);
-		SmH.game.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-		SmH.game.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-		SmH.game.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
+
 	 
 	}
 
@@ -354,7 +352,7 @@ class PlayState extends SmState
 		public var mouseXWorldPhys:Float;
 		public var mouseYWorldPhys:Float;
 		
-	public function onMouseDown(e:MouseEvent):Void {
+	override public function onMouseDown(e:MouseEvent):Void {
 		GetBodyAtMouse(false, e);
 		if (queriedBody != null) {
 			///
@@ -374,11 +372,11 @@ class PlayState extends SmState
 		}
 		
 	}
-	public function onMouseMove(e:MouseEvent) {
+	override public function onMouseMove(e:MouseEvent) {
 		mouseXWorldPhys=e.stageX*PHYSICS_SCALE;
 		mouseYWorldPhys = e.stageY * PHYSICS_SCALE;
 	}
-	public function onMouseUp(e:MouseEvent) {
+	override public function onMouseUp(e:MouseEvent) {
 		if (mouseJoint!=null) {
 			World.destroyJoint(mouseJoint);
 			mouseJoint = null;
