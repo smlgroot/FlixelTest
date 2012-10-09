@@ -60,10 +60,9 @@ class TestState extends SmState
 	private function construct ():Void {
 		
 		createWalls();
+		createRing(SmH.width/2-100,SmH.height/2-100,200,200);//posX,posY,width,height
 		
-		createRingWalls(200,200,400,400);
-		
-		lA=SmGame.createCircle(250,250,20,true,0,0);
+		lA=SmGame.createCircle((SmH.width/2),(SmH.height/2),10,true,0,0);
 		
 		//lA=createL(150,170);
 
@@ -75,25 +74,27 @@ class TestState extends SmState
 		/////////
 		if (rubbers.length > 0) {
 			graphics.clear();
-			if (rubbers[0].draw == true) {
-				var lAX:Float = (lA.rectangle.x-lA.rectangle.width/2);
-				var lAY:Float = (lA.rectangle.y);
+			for (i in 0...rubbers.length ) {
+				if (rubbers[i].draw == true) {
+					var lAX:Float = (lA.rectangle.x-lA.rectangle.width/2);
+					var lAY:Float = (lA.rectangle.y);
 
-				var rbX1:Float = (rubbers[0].rect.x);
-				var rbY1:Float = (rubbers[0].rect.y);
-				var rbX2:Float = (rubbers[0].rect.x+rubbers[0].rect.width);
-				var rbY2:Float = (rubbers[0].rect.y+rubbers[0].rect.height);
-				
-				graphics.clear();
+					var rbX1:Float = (rubbers[i].rect.x);
+					var rbY1:Float = (rubbers[i].rect.y);
+					var rbX2:Float = (rubbers[i].rect.right);
+					var rbY2:Float = (rubbers[i].rect.bottom);
+					
+					graphics.clear();
 
-				graphics.lineStyle(2, 0xf0f0f0);
-				
-				
-				graphics.moveTo(rbX1,rbY1);
-				graphics.lineTo(lAX,lAY);
-				
-				graphics.moveTo(rbX1,rbY2);
-				graphics.lineTo(lAX, lAY);
+					graphics.lineStyle(2, 0xfff0f0);
+					
+					
+					graphics.moveTo(rbX1,rbY1);
+					graphics.lineTo(lAX,lAY);
+					
+					graphics.moveTo(rbX2,rbY2);
+					graphics.lineTo(lAX, lAY);
+				}
 			}
 		}
 		////
@@ -121,33 +122,39 @@ class TestState extends SmState
 		SmGame.createEdge(SmH.width, SmH.height, 0, SmH.height, false);//Bottom.
 
 	}
-	public function createRingWalls(x:Float,y:Float,w:Float,h:Float):Void {
+	public function createRing(x:Float,y:Float,w:Float,h:Float):Void {
 		////trace("createRingWalls");
 		
 		var cornerWidth:Float = w * .10;
 		var cornerHeight:Float = h * .10;
 		
-		SmGame.createEdge( x, y+cornerHeight, x, h-cornerHeight, false);//Left.
+		SmGame.createEdge( x, y+cornerHeight, x, y+h-cornerHeight, false);//Left.
 		SmGame.createEdge( x, y+cornerHeight,x+cornerWidth, y+cornerHeight, false);//LeftTopCorner.
-		SmGame.createEdge( x, h - cornerHeight, x + cornerWidth, h - cornerHeight, false);//LeftBottomCorner.
-		var tempRubber:SmRubber= SmGame.createRubber(x + cornerWidth, y + cornerHeight, x + cornerWidth, h - cornerHeight,0);//LeftRubber.
+		SmGame.createEdge( x, y+h - cornerHeight, x + cornerWidth, y+h - cornerHeight, false);//LeftBottomCorner.
+		var tempRubber:SmRubber= SmGame.createRubber(x + cornerWidth, y + cornerHeight, x + cornerWidth, y+h - cornerHeight,0);//LeftRubber.
 		rubbers.push(tempRubber);
 		
 		
-		SmGame.createEdge( x + cornerWidth, y, w - cornerWidth, y, false);//Top.
+		SmGame.createEdge( x + cornerWidth, y, x+w - cornerWidth, y, false);//Top.
 		SmGame.createEdge( x + cornerWidth, y, x + cornerWidth,y+cornerHeight, false);//TopLeftCorner.
-		SmGame.createEdge( w - cornerWidth, y, w - cornerWidth,y+cornerHeight, false);//TopRightBottomCorner.
+		SmGame.createEdge( x + w - cornerWidth, y, x + w - cornerWidth, y + cornerHeight, false);//TopRightBottomCorner.
+		tempRubber= SmGame.createRubber(x + cornerWidth, y + cornerHeight, x +w- cornerWidth, y+ cornerHeight,1);//TopRubber.
+		rubbers.push(tempRubber);
 		
 		
 		
-		SmGame.createEdge( w, y + cornerHeight, w, h - cornerHeight, false);//Right.
-		SmGame.createEdge( w, y + cornerHeight, w-cornerWidth, y + cornerHeight, false);//RightTopCorner.
-		SmGame.createEdge( w, h - cornerHeight, w-cornerWidth, h - cornerHeight, false);//RightBottomCorner.
+		SmGame.createEdge( x+w, y + cornerHeight, x+w, y+h - cornerHeight, false);//Right.
+		SmGame.createEdge( x+w, y + cornerHeight, x+w-cornerWidth, y + cornerHeight, false);//RightTopCorner.
+		SmGame.createEdge( x + w, y + h - cornerHeight, x + w - cornerWidth, y + h - cornerHeight, false);//RightBottomCorner.
+		tempRubber= SmGame.createRubber(x +w- cornerWidth, y + cornerHeight, x +w- cornerWidth, y+h- cornerHeight,2);//RightRubber.
+		rubbers.push(tempRubber);
 		
 		
 		
-		SmGame.createEdge( w-cornerWidth, h, x+cornerWidth, h, false);//Bottom.
-		SmGame.createEdge( w-cornerWidth, h, w-cornerWidth, h-cornerHeight, false);//BottomRightCorner.
-		SmGame.createEdge( x+cornerWidth, h-cornerHeight, x+cornerWidth, h, false);//BottomLeftCorner.
+		SmGame.createEdge( x+w-cornerWidth, y+h, x+cornerWidth, y+h, false);//Bottom.
+		SmGame.createEdge( x+w-cornerWidth, y+h, x+w-cornerWidth, y+h-cornerHeight, false);//BottomRightCorner.
+		SmGame.createEdge( x+cornerWidth, y+h-cornerHeight, x+cornerWidth, y+h, false);//BottomLeftCorner.
+		tempRubber= SmGame.createRubber(x +w- cornerWidth, y +h- cornerHeight, x +cornerWidth, y+h- cornerHeight,3);//BottomRubber.
+		rubbers.push(tempRubber);
 	}
 }

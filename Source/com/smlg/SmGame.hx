@@ -154,7 +154,7 @@ class SmGame extends Sprite
 	}*/
 
 
-	public static function createRubber(x1:Float, x2:Float, y1:Float, y2:Float,id:Int):SmRubber{
+	public static function createRubber(x1:Float, y1:Float, x2:Float, y2:Float,id:Int):SmRubber{
 		var body:B2Body = createEdge( x1,y1, x2, y2, true, id);
 		
 		var res:SmRubber = new SmRubber(body, new Rectangle(x1,y1,x2-x1,y2-y1));

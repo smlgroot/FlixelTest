@@ -28,15 +28,15 @@ class RubberListener extends B2ContactListener
 			bodyL = bodies.pop();
 			bodyEdge = bodies.pop();
 
-			res = testXPosLessThan(bodyEdge, bodyL);
-			if(res==true){
+			//res = testXPosLessThan(bodyEdge, bodyL);
+			//if(res==true){
 				this.listener(bodyEdge.getUserData(),true);
-			}
+			//}
 		}
 	}
 
 	override public function endContact(contact:B2Contact) {
-		var bodyEdge:B2Body = null;
+		/*var bodyEdge:B2Body = null;
 		var bodyL:B2Body = null;
 		var res:Bool=false ;
 		
@@ -49,7 +49,7 @@ class RubberListener extends B2ContactListener
 
 			this.listener(bodyEdge.getUserData(),false);
 
-		}
+		}*/
 	}
 	private function findBodies(bodyA:B2Body, bodyB:B2Body):Array<B2Body> {
 		var res:Array<B2Body> = new Array<B2Body>();
