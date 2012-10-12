@@ -2,6 +2,7 @@ package com.smlg;
 //
 import com.kalimeradev.test.RubberListener;
 import com.kalimeradev.test.states.MenuState;
+//
 import nme.display.Sprite;
 import nme.events.Event;
 import nme.geom.Rectangle;
@@ -41,7 +42,7 @@ class SmGame extends Sprite
 	//
 	public var currentstate:SmState;
 	//
-	public static var PHYSICS_SCALE:Float = 1 / 30;
+	public static var PHYSICS_SCALE:Float = 1 / 5;
 	public static var World:B2World;
 	private var PhysicsDebug:Sprite;
 	//
@@ -50,6 +51,7 @@ class SmGame extends Sprite
 	public static var mouseXWorldPhys:Float;
 	public static var mouseYWorldPhys:Float;
 	//
+	
 	public function new(stageWidth:Float=0,stageHeight:Float=0) 
 	{
 		super();
@@ -153,18 +155,79 @@ class SmGame extends Sprite
 		createRevoluteJoint(lastBody, currentBody,currentBody.getWorldCenter());
 	}*/
 
-
-	public static function createRubber(x1:Float, y1:Float, x2:Float, y2:Float,id:Int):SmRubber{
-		var body:B2Body = createEdge( x1,y1, x2, y2, true, id);
+public static function createL(x:Float, y:Float,w:Float,h:Float):SmObject {
+		//Sizes
+		var torseWidth:Float = w / 2;
+		var torseHeight:Float = h / 2;
 		
-		var res:SmRubber = new SmRubber(body, new Rectangle(x1,y1,x2-x1,y2-y1));
+		var footWidth:Float = w / 4;
+		var footHeight:Float = h / 4 ;
+		
+		var armWidth:Float = w / 4;
+		var armHeight:Float = h / 2 ;
+		
+		var headWidth:Float = (h - (torseHeight + footHeight)) ;
+		var headHeight:Float = (h-(torseHeight+footHeight));
+		
+		//Positions
+		var torseX:Float = x;
+		var torseY:Float = y;
+		
+		var headX:Float = torseX;
+		var headY:Float = torseY-(torseHeight/2)-(headHeight/2);
+		
+		var footX:Float = torseX;
+		var footY:Float = torseY+(torseHeight/2)+(footHeight/2);
+		
+		var armX:Float = torseX;
+		var armY:Float = torseY;
+		
+		
+		
+		//Bodies
+		var head:B2Body=createBox(headX, headY, headWidth,headHeight,true);//Head
+		var leftFoot:B2Body=createBox(footX-footWidth/2, footY, footWidth, footHeight, true);//LeftFoot
+		var rightFoot:B2Body=createBox(footX+footWidth/2, footY, footWidth, footHeight, true);//RightFoot
+		var leftArm:B2Body=createBox(armX-(torseWidth/2)-(w/8), armY, armWidth, armHeight, true);//LeftArm
+		var rightArm:B2Body=createBox(armX+(torseWidth/2)+(w/8), armY, armWidth, armHeight, true);//RightArm
+		var torse:B2Body=createBox(torseX,torseY, torseWidth, torseHeight, true);//Torse
+		
+		//createBox(x,y,w,h, false, -1, -1);//Box
+		
+		
+		////Joints
+		var tempAchorA:B2Vec2 = null;
+		var tempAchorB:B2Vec2 = null;
+		
+		tempAchorA = new B2Vec2(torseX, torseY - (torseHeight / 2)-2);
+		tempAchorB = new B2Vec2(torseX, torseY - (torseHeight / 2)+2);
+		createDistanceJoint(head, torse, tempAchorA, tempAchorB);//Head - Torse.
+		
+		tempAchorA = new B2Vec2(footX-footWidth/2, footY - (footHeight / 2)-2);
+		tempAchorB = new B2Vec2(footX-footWidth/2, footY - (footHeight / 2)+2);
+		createDistanceJoint(torse, leftFoot, tempAchorA, tempAchorB);//Torse - LeftFoot.
+		
+		tempAchorA = new B2Vec2(footX+footWidth/2, footY - (footHeight / 2)-2);
+		tempAchorB = new B2Vec2(footX+footWidth/2, footY - (footHeight / 2)+2);
+		createDistanceJoint(torse, rightFoot, tempAchorA, tempAchorB);//Torse - RightFoot.
+		
+		tempAchorA = new B2Vec2(armX-(torseWidth/2), armY - (armHeight / 2));
+		tempAchorB = new B2Vec2(armX-(torseWidth/2)-2, armY - (armHeight / 2)+2);
+		createDistanceJoint(torse, leftArm, tempAchorA, tempAchorB);//Torse - LeftArm.
+		
+		tempAchorA = new B2Vec2(armX+(torseWidth/2), armY - (armHeight / 2));
+		tempAchorB = new B2Vec2(armX+(torseWidth/2)+2, armY - (armHeight / 2)+2);
+		createDistanceJoint(torse, rightArm, tempAchorA, tempAchorB);//Torse - RightArm.
+		
+		var res:SmObject = new SmObject(torse, new Rectangle(x * PHYSICS_SCALE, y * PHYSICS_SCALE, w * PHYSICS_SCALE, h * PHYSICS_SCALE));
+		
 		return res;
-		
-		////Visual Line
-		/*showLine = false;
-		line = new Sprite();
-		addChild(line);*/
-		////
+	}
+	public static function createRubber(x1:Float, y1:Float, x2:Float, y2:Float,rubberPos:Int):SmObject{
+		var res:SmObject = createEdge( x1, y1, x2, y2);
+		res.setProperty(SmObject.PROPERTY_SENSOR, true);
+		res.setProperty(SmObject.PROPERTY_USER_DATA, [SmObject.OBJECT_TYPE_RUBBER,rubberPos]);
+		return res;
 	}
 
 	private function createRevoluteJoint(bA:B2Body,bB:B2Body,anchor:B2Vec2):Void {
@@ -191,26 +254,28 @@ class SmGame extends Sprite
 		World.createJoint(joint);
 	}
 	
-	private function createDistanceJoint(bA:B2Body,bB:B2Body,anchorA:B2Vec2, anchorB:B2Vec2):Void {
+	public static function createDistanceJoint(bA:B2Body,bB:B2Body,anchorA:B2Vec2, anchorB:B2Vec2,collideConnected:Bool=true):Void {
+		anchorA.multiply(PHYSICS_SCALE);
+		anchorB.multiply(PHYSICS_SCALE);
+		
 		var joint:B2DistanceJointDef = new B2DistanceJointDef();
 		joint.initialize(bA, bB, anchorA, anchorB);
 		//joint.localAnchorA.set(0,0);
 		//joint.localAnchorB.set(0,1);
-		joint.collideConnected = true;
-		//joint.dampingRatio = 5;
-		//joint.frequencyHz = 60;
+		joint.collideConnected = collideConnected;
+		//joint.dampingRatio = 50*PHYSICS_SCALE;
+		//joint.frequencyHz = 1000*PHYSICS_SCALE;
 		World.createJoint(joint);
 	}
 	
-	private function createBox (x:Float, y:Float, width:Float, height:Float, dynamicBody:Bool,maskBits:Int,categoryBits:Int):B2Body {
+public static function createBox (x:Float, y:Float, width:Float, height:Float,dynamicBody:Bool=false):B2Body {
 	 
+		
 		var bodyDefinition = new B2BodyDef ();
 		bodyDefinition.position.set (x * PHYSICS_SCALE, y * PHYSICS_SCALE);
 
 		if (dynamicBody) {
-	 
 			bodyDefinition.type = B2Body.b2_dynamicBody;
-	 
 		}
 	 
 		var polygon = new B2PolygonShape ();
@@ -219,15 +284,8 @@ class SmGame extends Sprite
 		var fixtureDefinition = new B2FixtureDef ();
 		fixtureDefinition.shape = polygon;
 		fixtureDefinition.density = .1;
-		fixtureDefinition.friction = 0.1;
+		fixtureDefinition.friction =  0.1;
 		fixtureDefinition.restitution = .5;
-		
-		if(maskBits>0){
-			fixtureDefinition.filter.maskBits = maskBits;
-		}
-		if(categoryBits>0){
-			fixtureDefinition.filter.categoryBits = categoryBits;
-		}
 		
 		var body:B2Body = World.createBody (bodyDefinition);
 		body.createFixture (fixtureDefinition);
@@ -235,53 +293,40 @@ class SmGame extends Sprite
 		return body;
 	}
 	
-	public static function createCircle (x:Float, y:Float, radius:Float, dynamicBody:Bool,maskBits:Int,categoryBits:Int):SmObject {
+	public static function createCircle (x:Float, y:Float, radius:Float,dynamicBody:Bool=false):SmObject {
+
+		x = x * PHYSICS_SCALE;
+		y = y * PHYSICS_SCALE;
+		radius = radius * PHYSICS_SCALE;
 		
 		var bodyDefinition = new B2BodyDef ();
-		bodyDefinition.position.set (x * PHYSICS_SCALE, y * PHYSICS_SCALE);
+		bodyDefinition.position.set (x, y);
 		
 		if (dynamicBody) {
-			
 			bodyDefinition.type = B2Body.b2_dynamicBody;
-			
 		}
 		
-		var circle = new B2CircleShape (radius * PHYSICS_SCALE);
+		var circle = new B2CircleShape (radius);
 		
 		var fixtureDefinition = new B2FixtureDef ();
 		fixtureDefinition.shape = circle;
-		fixtureDefinition.restitution = .5;
-		fixtureDefinition.density = .5;
-		fixtureDefinition.friction = .1;
+		fixtureDefinition.density = .1;
+		fixtureDefinition.friction =0.1;
+		fixtureDefinition.restitution =  .5;
 		
-		if(maskBits>0){
-			fixtureDefinition.filter.maskBits = maskBits;
-		}
-		if(categoryBits>0){
-			fixtureDefinition.filter.categoryBits = categoryBits;
-		}
-		
+	
 		var body = World.createBody (bodyDefinition);
 		body.createFixture (fixtureDefinition);
 		//body.setBullet(true);
 		
-		var res:SmObject = new SmObject(body, radius);
+		var res:SmObject = new SmObject(body, new Rectangle(x, y, radius * 2, radius * 2));
 		
 		return res;
 	}
-	
-	public static function createEdge( x1:Float,y1:Float,x2:Float,y2:Float,asSensor:Bool,userData:Int=-1):B2Body {
-		////trace("createEdge");
-		 
+
+	public static function createEdge( x1:Float,y1:Float,x2:Float,y2:Float):SmObject {
+
 		var bodyDefinition = new B2BodyDef ();
-		/*bodyDefinition.position.set (0,0);
-		 
-		x1 = x1 * PHYSICS_SCALE;
-		y1 = y1 * PHYSICS_SCALE;
-		
-		x2 = x2 * PHYSICS_SCALE;
-		y2 = y2 * PHYSICS_SCALE;*/
-		
 		
 		var xA:Float =  x1;
 		var yA:Float = y1;
@@ -294,25 +339,21 @@ class SmGame extends Sprite
 		
 		bodyDefinition.position.set (x1,y1);
 		 
-		
-		
-
 		var edge:B2PolygonShape = B2PolygonShape.asEdge(new B2Vec2(0,0),new B2Vec2(x2,y2));
 		
 		var fixtureDefinition = new B2FixtureDef ();
 		fixtureDefinition.shape = edge;
 		fixtureDefinition.density = 0;
 		fixtureDefinition.friction = 0.3;
-		if (asSensor) {
-			fixtureDefinition.isSensor = true;
-		}
 	 
+		
 		var body:B2Body = World.createBody (bodyDefinition);
-		if(userData>=0){
-			body.setUserData(userData);
-		}
+
 		body.createFixture (fixtureDefinition);
-		return body;
+
+		var res:SmObject = new SmObject(body, new Rectangle(x1/PHYSICS_SCALE, y1/PHYSICS_SCALE, x2/PHYSICS_SCALE , y2/PHYSICS_SCALE ));
+		
+		return res;
 	}
 
 	
@@ -327,7 +368,7 @@ class SmGame extends Sprite
 			mouseJointDef.bodyA=World.getGroundBody();
 			mouseJointDef.bodyB=queriedBody;
 			mouseJointDef.target.set(mouseXWorldPhys, mouseYWorldPhys);
-			mouseJointDef.maxForce=500;
+			mouseJointDef.maxForce=5000;
 			//mouseJointDef.timeStep=m_timeStep;
 			//mouseJointDef.frequencyHz =  30;
 			mouseJoint= cast(World.createJoint(mouseJointDef),B2MouseJoint);
@@ -376,5 +417,5 @@ class SmGame extends Sprite
 		mouseXWorldPhys = e.stageX * PHYSICS_SCALE;
 		mouseYWorldPhys = e.stageY * PHYSICS_SCALE;
 	}
-	
+
 }

@@ -27,7 +27,7 @@ class SmState extends Sprite
 	public function onMouseUp(e:MouseEvent):Void {
 		
 	}
-	public function rubberListener(id:Int,draw:Bool):Void {
+	public function rubberListener(userData:Array<Int>):Void {
 		
 	}
 	

@@ -12,10 +12,10 @@ import box2D.dynamics.contacts.B2Contact;
 import com.smlg.SmH;
 class RubberListener extends B2ContactListener
 {
-	private var listener:Int->Bool->Void;
+	private var listener:Array<Int>->Void;
 	private var id:Int;
 	
-	public function new(listener:Int->Bool->Void) {
+	public function new(listener:Array<Int>->Void) {
 		super();
 		this.listener = listener;
 	}
@@ -30,13 +30,16 @@ class RubberListener extends B2ContactListener
 
 			//res = testXPosLessThan(bodyEdge, bodyL);
 			//if(res==true){
-				this.listener(bodyEdge.getUserData(),true);
+				var userData = bodyEdge.getUserData();
+				userData[2] = true;
+				bodyEdge.setUserData(userData);
+				this.listener(bodyEdge.getUserData());
 			//}
 		}
 	}
 
 	override public function endContact(contact:B2Contact) {
-		/*var bodyEdge:B2Body = null;
+		var bodyEdge:B2Body = null;
 		var bodyL:B2Body = null;
 		var res:Bool=false ;
 		
@@ -45,11 +48,14 @@ class RubberListener extends B2ContactListener
 			bodyL = bodies.pop();
 			bodyEdge = bodies.pop();
 
-			res = testXPosLessThan(bodyL,bodyEdge);
+			//res = testXPosLessThan(bodyL,bodyEdge);
 
-			this.listener(bodyEdge.getUserData(),false);
+			var userData = bodyEdge.getUserData();
+			userData[2] = false;
+			bodyEdge.setUserData(userData);
+			this.listener(bodyEdge.getUserData());
 
-		}*/
+		}
 	}
 	private function findBodies(bodyA:B2Body, bodyB:B2Body):Array<B2Body> {
 		var res:Array<B2Body> = new Array<B2Body>();
